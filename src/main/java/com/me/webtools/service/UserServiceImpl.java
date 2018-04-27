@@ -77,6 +77,18 @@ public class UserServiceImpl implements UserService {
 		return userDao.myJobList(email);
 	}
 
+	@Override
+	public List<Job> myTaskCreatedList(String email) {
+		// TODO Auto-generated method stub
+		return userDao.myTaskCreatedList(email);
+	}
+
+	@Override
+	public void updateJob2(Job job) {
+		 userDao.updateJob2(job);
+		
+	}
+
 	
 
 	

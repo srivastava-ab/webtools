@@ -73,9 +73,12 @@ public class LoginController {
 	@RequestMapping(value = "/registerProcess", method = RequestMethod.POST)
 	public ModelAndView addUser(HttpServletRequest req, HttpServletResponse res, @ModelAttribute("user") User user)
 			throws PersistenceException {
+		ModelAndView mav = new ModelAndView();
 		
+		mav.addObject("enum1", Roles.values());
+
 		req.getSession().setAttribute("loginUser", user);
-		user.setImageName("Blank");
+		user.setImageName("default.png");
 		
 		try {
 			userService.register(user);
@@ -85,9 +88,9 @@ public class LoginController {
 					+ ex.getMessage().contains("ConstraintViolationException"));
 			if (ex.getMessage().contains("ConstraintViolationException")) {
 
-
-				return new ModelAndView("register", "exception",
-						"Email id is already registered, please try different email");
+				mav.addObject( "exception",	"Email id is already registered, please try different email");
+				mav.setViewName("register");
+				return mav;
 
 			}
 		}
@@ -96,13 +99,22 @@ public class LoginController {
 		req.getSession().setAttribute("Date", new Date());
 		
 		if(user.getUserRole().equalsIgnoreCase(Roles.Admin.name())){
-			return new ModelAndView("adminhome", "firstname", user.getFirstname());
+			
+			mav.addObject( "firstname", user.getFirstname());
+			mav.setViewName("adminhome");
+			return mav;
+			//return new ModelAndView("adminhome", "firstname", user.getFirstname());
 		}else if(user.getUserRole().equalsIgnoreCase(Roles.Employee.name())){
-			return new ModelAndView("employeehome", "firstname", user.getFirstname());
+			
+			mav.addObject( "firstname", user.getFirstname());
+			mav.setViewName("employeehome");
+			return mav;
+			//return new ModelAndView("employeehome", "firstname", user.getFirstname());
 		}
 		
-		
-		return new ModelAndView("register");
+		mav.setViewName("register");
+		return mav;
+		//return new ModelAndView("register");
 	}
 
 	@RequestMapping(value = "/loginProcess", method = RequestMethod.POST)
@@ -158,13 +170,13 @@ public class LoginController {
 	}
 
 	
-    @RequestMapping(value="/invalidate", method=RequestMethod.POST)
+    @RequestMapping(value="/invalidate", method=RequestMethod.GET)
     public ModelAndView invalidate(HttpSession session, Model model) {
         session.invalidate();
         System.out.println("session invalidated");
         if(model.containsAttribute("user")) model.asMap().remove("user");
 
 
-        return new ModelAndView("logout");
+        return new ModelAndView("home");
     }
 }

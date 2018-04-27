@@ -42,6 +42,7 @@ public class UserDaoImpl implements UserDao {
 		currentSession.beginTransaction();
 		currentSession.save(user);
 		currentSession.getTransaction().commit();
+		currentSession.flush();
 
 	}
 
@@ -68,18 +69,7 @@ public class UserDaoImpl implements UserDao {
 		// jdbcTemplate.update(sql);
 	}
 
-	/*
-	 * public User validateUser(Login login) {
-	 * 
-	 * String sql = "Select * from users where email='"+
-	 * login.getEmail()+"' and password ='"+login.getPassword()+"'"; List<User>
-	 * userList = jdbcTemplate.query(sql, new UserMapper());
-	 * 
-	 * return userList.size()>0? (BCrypt.checkpw(login.getPassword(),
-	 * userList.get(0).getPassword()))?userList.get(0):null:null;
-	 * 
-	 * }
-	 */
+
 
 	public User validateUser(Login login) {
 		Query query = currentSession.createQuery("from User where email = :email  and password = :password");
@@ -112,7 +102,9 @@ public class UserDaoImpl implements UserDao {
 
 		User temp = (User) results.get(0);
 
-		user.setPassword(temp.getPassword());
+		if (null != user.getPassword()) {
+			temp.setPassword(user.getPassword());
+		}
 		if (null != user.getPhone()) {
 			temp.setPhone(user.getPhone());
 		}
@@ -126,13 +118,17 @@ public class UserDaoImpl implements UserDao {
 		if (null != user.getFirstname()) {
 			temp.setFirstname(user.getFirstname());
 		}
-		
+
 		if (null != user.getLastname()) {
 			temp.setLastname(user.getLastname());
 		}
-		
+
 		if (null != user.getUsername()) {
 			temp.setUsername(user.getUsername());
+		}
+
+		if (null != user.getImageName()) {
+			temp.setUsername(user.getImageName());
 		}
 
 		System.out.println("Inside update");
@@ -158,7 +154,7 @@ public class UserDaoImpl implements UserDao {
 
 	public List<Job> findjobsInCity(String cityName) {
 
-		System.out.println("Inside job create");
+		System.out.println("Inside findjobsInCity");
 
 		System.out.println("City name: " + cityName);
 
@@ -212,7 +208,7 @@ public class UserDaoImpl implements UserDao {
 
 		job.setJobStatus(jobStatus);
 		job.setJobProcessedBy(userEmail);
-		job.setJobProcessingStartDate(date);
+		job.setJobProcessingEndDate(date);
 
 		/*
 		 * job1.setJobCity("asd"); job1.set
@@ -251,6 +247,45 @@ public class UserDaoImpl implements UserDao {
 		List<Job> results = query.list();
 
 		return results;
+
+	}
+
+	@Override
+	public List<Job> myTaskCreatedList(String email) {
+
+		System.out.println("Inside find job list");
+
+		System.out.println("Email is: " + email);
+
+		String hql = "FROM Job WHERE jobRaisedBy = :email";
+		System.out.println("hql-->" + hql);
+		Query query = currentSession.createQuery(hql);
+		query.setParameter("email", email);
+		List<Job> results = query.list();
+
+		return results;
+
+	}
+
+	@Override
+	public void updateJob2(Job job) {
+		Criteria cr = currentSession.createCriteria(Job.class);
+		cr.add(Restrictions.eq("jobID", job.getJobID()));
+		List results = cr.list();
+
+		Job temp = (Job) results.get(0);
+
+		if (null != job.getJobStatus()) {
+			temp.setJobStatus(job.getJobStatus());
+		}
+		if (null != job.getJobProcessingStartDate()) {
+			temp.setJobProcessingStartDate(job.getJobProcessingStartDate());
+		}
+		System.out.println("Inside job  update");
+		currentSession.beginTransaction();
+		currentSession.update(temp);
+		currentSession.getTransaction().commit();
+		// HibernateUtil.shutdown();
 
 	}
 

@@ -20,7 +20,7 @@
                     <div class="panel-body">
                         <div class="row">
                             <div class="col-md-6">
-                            <form :form id="imgUpload" action="/uploadimgctlr" method="GET" enctype="multipart/form-data">
+                            <form:form id="imgUpload" action="/uploadimgctlr" method="GET" enctype="multipart/form-data">
                                     <div class="form-group">
                                         <label>File input</label>
                                         <input type="file" method="POST" accept=".jpg" name="file"/>
@@ -28,7 +28,7 @@
                                     <div >
                                         <button type="submit" class="btn btn-primary">Upload</button>
                                     </div>
-                                </form>
+                                </form:form>
                             </div>
                         </div>
 

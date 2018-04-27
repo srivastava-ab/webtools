@@ -3,8 +3,8 @@ package com.me.webtools.pojo;
 public enum JobStatus {
 
 	NEW("new"),
-	ASSIGN("assign"),
-	PROCESSING("processing"),
+	ASSIGNED("assign"),
+	PENDING_APPROVAL("pending_approval"),
 	COMPLETE("complete");
 	
 	 private String name;

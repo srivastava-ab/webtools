@@ -35,4 +35,8 @@ public interface UserDao {
 
 	List<Job> myJobList(String email);
 
+	List<Job> myTaskCreatedList(String email);
+
+	void updateJob2(Job job);
+
 }
